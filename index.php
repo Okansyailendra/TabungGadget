@@ -28,7 +28,7 @@
         
         <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
             <a href="finder.php"><button style="width: auto; padding: 15px 40px;">🔍 Cari Gagdet</button></a>
-            <a href="tabungan.php"><button style="width: auto; padding: 15px 40px; background: transparent; border: 2px solid var(--primary); color: var(--primary);">💰 Mulai Menabung</button></a>
+            <a href="tabungan.php"><button style="width: auto; padding: 15px 40px;">💰 Mulai Menabung</button></a>
         </div>
     </div>
 

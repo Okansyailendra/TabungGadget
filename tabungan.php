@@ -31,30 +31,6 @@ if (isset($_POST['buat_target'])) {
     <title>TabunganKu | TabungGadget</title>
     <link rel="stylesheet" href="assets/style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        /* --- CSS FIX DROPDOWN (PASTI JALAN) --- */
-        select, input {
-            background-color: #1e293b !important;
-            color: #ffffff !important;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 12px;
-            border-radius: 8px;
-            width: 100%;
-            outline: none;
-        }
-        select option {
-            background-color: #0f172a !important;
-            color: white !important;
-            padding: 10px;
-        }
-        ::placeholder { color: rgba(255, 255, 255, 0.5) !important; }
-
-        /* Style Progress Bar */
-        .progress-bar { height: 25px; background: #334155; border-radius: 15px; overflow: hidden; margin: 15px 0; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, #4da6ff, #7f5af0); width: 0%; transition: width 1s ease; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold; color: white; }
-        .history-list { list-style: none; padding: 0; max-height: 200px; overflow-y: auto; }
-        .history-item { background: rgba(255, 255, 255, 0.05); padding: 10px; margin-bottom: 5px; border-radius: 8px; display: flex; justify-content: space-between; font-size: 0.9rem; }
-    </style>
 </head>
 
 <body>
@@ -214,8 +190,8 @@ if (isset($_POST['buat_target'])) {
                             datasets: [{
                                 label: 'Total Saldo',
                                 data: <?php echo json_encode($data); ?>,
-                                borderColor: '#4da6ff',
-                                backgroundColor: 'rgba(77, 166, 255, 0.1)',
+                                borderColor: '#00f0ff',
+                                backgroundColor: 'rgba(0, 240, 255, 0.1)',
                                 fill: true, tension: 0.3
                             }]
                         }

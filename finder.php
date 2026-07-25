@@ -6,37 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cari Gadget | TabungGadget</title>
     <link rel="stylesheet" href="assets/style.css">
-    <style>
-        /* --- CSS FIX KHUSUS AGAR DROPDOWN TIDAK PUTIH --- */
-        select, input[type="text"], input[type="number"] {
-            background-color: #1e293b !important; /* Warna Biru Gelap */
-            color: #ffffff !important;           /* Teks Putih */
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 12px;
-            border-radius: 8px;
-            outline: none;
-        }
 
-        /* Memaksa pilihan di dalam dropdown berwarna gelap */
-        select option {
-            background-color: #0f172a !important;
-            color: white !important;
-            padding: 10px;
-        }
-
-        /* Placeholder samar */
-        ::placeholder { color: rgba(255, 255, 255, 0.5) !important; }
-
-        /* Style Tambahan untuk Card Finder */
-        .laptop-item { 
-            background: rgba(255,255,255,0.05); 
-            padding: 20px; 
-            border-radius: 15px; 
-            border: 1px solid rgba(255,255,255,0.05); 
-            transition: transform 0.2s;
-        }
-        .laptop-item:hover { transform: translateY(-5px); border-color: var(--primary); }
-    </style>
 </head>
 <body>
     <nav>
