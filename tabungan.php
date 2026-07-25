@@ -166,10 +166,24 @@ if (isset($_POST['buat_target'])) {
                         </div>
                     </div>
 
-                    <form method="POST" onsubmit="return confirm('Hapus target?')" style="text-align:right; margin-top:20px;">
-                        <input type="hidden" name="goal_id" value="<?php echo $goal_id; ?>">
-                        <button type="submit" name="reset" style="background:#ef4444; width:auto; padding:8px 15px; font-size:0.8rem; border:none; color:white; border-radius:5px; cursor:pointer;">🗑️ Batalkan Target</button>
-                    </form>
+                    <div style="text-align:right; margin-top:20px;">
+                        <button type="button" onclick="document.getElementById('cyberModal').style.display='flex'" style="background:rgba(239, 68, 68, 0.1); width:auto; padding:8px 15px; font-size:0.8rem; border:1px solid #ef4444; color:#ef4444; border-radius:5px; cursor:pointer; box-shadow:0 0 10px rgba(239,68,68,0.2); text-transform:uppercase; letter-spacing:1px; transition:0.3s;">🗑️ Batalkan Target</button>
+                    </div>
+
+                    <!-- Modal Cyberpunk Confirm -->
+                    <div id="cyberModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(8px);">
+                        <div class="card" style="border-left:5px solid #ef4444; text-align:center; max-width:450px; padding:35px; box-shadow:0 0 40px rgba(239, 68, 68, 0.3); background:#0f172a;">
+                            <h2 style="color:#ef4444; margin-top:0; text-shadow:0 0 10px rgba(239,68,68,0.5);">⚠️ SYSTEM ALERT</h2>
+                            <p style="color:#cbd5e1; font-size:1.1rem; line-height:1.5;">Apakah Anda yakin ingin membatalkan target tabungan ini? Data riwayat tabungan untuk gadget ini akan dihapus permanen.</p>
+                            <div style="display:flex; justify-content:center; gap:20px; margin-top:30px;">
+                                <button type="button" onclick="document.getElementById('cyberModal').style.display='none'" style="background:rgba(74, 222, 128, 0.1); border:1px solid #4ade80; color:#4ade80; box-shadow:0 0 10px rgba(74,222,128,0.2); width:130px; font-weight:bold;">BATAL</button>
+                                <form method="POST" style="margin:0;">
+                                    <input type="hidden" name="goal_id" value="<?php echo $goal_id; ?>">
+                                    <button type="submit" name="reset" style="background:rgba(239, 68, 68, 0.15); border:1px solid #ef4444; color:#ef4444; box-shadow:0 0 15px rgba(239, 68, 68, 0.4); width:130px; font-weight:bold; text-shadow:0 0 5px rgba(239,68,68,0.5);">YA, HAPUS</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </section>
 
                 <script>

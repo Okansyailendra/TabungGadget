@@ -36,11 +36,13 @@
                     <div style="flex: 1; min-width: 200px;">
                         <label>Kategori / Kebutuhan</label>
                         <select name="category" required>
-                            <option value="Gaming">Gaming</option>
-                            <option value="Office">Office / Kantoran</option>
-                            <option value="Editing">Editing / Desain</option>
-                            <option value="Menggambar">Menggambar (Tablet)</option>
-                            <option value="Belajar">Belajar / Sekolah</option>
+                            <option value="">-- Semua Kategori --</option>
+                            <?php
+                            $q_cat = mysqli_query($conn, "SELECT DISTINCT category FROM gadgets WHERE category IS NOT NULL ORDER BY category ASC");
+                            while($cat = mysqli_fetch_assoc($q_cat)) {
+                                echo "<option value='{$cat['category']}'>{$cat['category']}</option>";
+                            }
+                            ?>
                         </select>
                     </div>
                     <div style="flex: 1; min-width: 200px;">
@@ -56,7 +58,8 @@
             <?php
             if(isset($_POST['cari'])){
                 $t = $_POST['type']; $c = $_POST['category']; $b = $_POST['budget'];
-                $q = mysqli_query($conn, "SELECT * FROM gadgets WHERE gadget_type='$t' AND category='$c' AND price <= $b ORDER BY price DESC");
+                $cat_query = ($c == "") ? "" : "AND category='$c'";
+                $q = mysqli_query($conn, "SELECT * FROM gadgets WHERE gadget_type='$t' $cat_query AND price <= $b ORDER BY price DESC");
                 if(mysqli_num_rows($q) > 0){
                     while($d = mysqli_fetch_assoc($q)){
                         echo "

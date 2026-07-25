@@ -186,101 +186,242 @@
             $upgrade_list = [];
             $biaya_upgrade = 0;
             $is_laptop = ($type == 'Laptop');
+            $alasan = [];
+            $expert_verdict = [];
             
             // --- KASTA CHIPSET/CPU ---
             $tier = "Basic";
             if ($is_laptop) {
-                if (preg_match('/(i9|ryzen 9|m3 max|m4 max)/', $cpu_l)) $tier = "Enthusiast";
-                elseif (preg_match('/(i7|ryzen 7|m2 pro|ultra 7)/', $cpu_l)) $tier = "High-End";
-                elseif (preg_match('/(i5|ryzen 5|m1|ultra 5)/', $cpu_l)) $tier = "Mid-Range";
+                if (preg_match('/(i9|ryzen 9|m3 max|m4 max|ultra 9|x elite)/', $cpu_l)) $tier = "Enthusiast";
+                elseif (preg_match('/(i7|ryzen 7|m2 pro|m3 pro|ultra 7)/', $cpu_l)) $tier = "High-End";
+                elseif (preg_match('/(i5|ryzen 5|m1|m2|m3|ultra 5)/', $cpu_l)) $tier = "Mid-Range";
                 elseif (preg_match('/(i3|ryzen 3)/', $cpu_l)) $tier = "Entry";
             } else {
-                if (preg_match('/(gen 3|gen 2|a17|a18|dimensity 9|m4)/', $cpu_l)) $tier = "Flagship";
-                elseif (preg_match('/(gen 1|888|a15|a16|dimensity 8)/', $cpu_l)) $tier = "High-End";
+                if (preg_match('/(gen 3|gen 4|a17|a18|dimensity 9|m4)/', $cpu_l)) $tier = "Flagship";
+                elseif (preg_match('/(gen 2|888|a15|a16|dimensity 8)/', $cpu_l)) $tier = "High-End";
                 elseif (preg_match('/(7 gen|dimensity 7|helio g99)/', $cpu_l)) $tier = "Mid-Range";
                 else $tier = "Entry Level";
             }
 
-            // --- CEK KECOCOKAN KATEGORI ---
-            $cat_warning = [];
-            
-            if ($category == 'Camera') {
-                if ($storageSize < 256) $cat_warning[] = "⚠️ Fotografi butuh penyimpanan besar. 128GB cepat habis.";
-                if ($tier == "Entry Level" || $tier == "Mid-Range") $cat_warning[] = "⚠️ Chipset kelas ini biasanya punya ISP standar. Foto malam mungkin kurang bagus.";
-            }
-            if ($category == 'Daily') {
-                if (preg_match('/(888|gen 1)/', $cpu_l)) $cat_warning[] = "⚠️ Chipset tipe ini (SD 888/Gen1) dikenal panas & boros baterai.";
-                if ($ram < 6) $cat_warning[] = "⚠️ RAM kecil akan membuat HP sering reload aplikasi (boros daya).";
-            }
-            if ($category == 'Gaming') {
-                if ($is_laptop && $gpu == 'Integrated') $cat_warning[] = "⛔ Laptop tanpa VGA Dedicated TIDAK COCOK untuk gaming berat.";
-                if (!$is_laptop && $tier == "Entry Level") $cat_warning[] = "⛔ Chipset Entry Level akan lag main game berat modern.";
+            // --- STANDAR 2026 ---
+            $req_ram = 8;
+            $req_storage = 256;
+            if ($is_laptop) {
+                if ($category == 'Gaming' || $category == 'Editing') { $req_ram = 16; $req_storage = 512; }
+                else { $req_ram = 8; $req_storage = 256; }
+            } else {
+                if ($category == 'Gaming' || $category == 'Camera') { $req_ram = 8; $req_storage = 256; }
+                else { $req_ram = 6; $req_storage = 128; }
             }
 
-            // --- REKOMENDASI UPGRADE ---
+            // --- BOTTLENECK & SYNERGY DETECTION (EXPERT LOGIC) ---
+            $is_bottleneck = false;
+            $is_overkill = false;
+
             if ($is_laptop) {
-                $req_ram = ($category == 'Gaming' || $category == 'Editing') ? 16 : 8;
-                if ($ram < $req_ram) {
-                    $biaya = 350000; $biaya_upgrade += $biaya;
-                    $upgrade_list[] = ["Tambah RAM (Target $req_ram GB)", $biaya];
+                // Bottleneck GPU kuat tapi CPU lemah
+                if (($gpu == 'High' || $gpu == 'Mid') && $tier == "Entry") {
+                    $expert_verdict[] = "💥 **BOTTLENECK CPU:** Processor kelas Entry ($cpu) tidak akan sanggup mengimbangi kecepatan VGA Dedicated kelas atas/menengah. Kinerja grafis akan sangat terhambat (*stuttering* parah).";
+                    $is_bottleneck = true;
                 }
-                if ($storageType == 'HDD') {
-                    $biaya = 300000; $biaya_upgrade += $biaya;
-                    $upgrade_list[] = ["Ganti HDD ke SSD", $biaya];
+                // Bottleneck CPU kuat tapi RAM kecil
+                if (($tier == "High-End" || $tier == "Enthusiast") && $ram < 16) {
+                    $expert_verdict[] = "💥 **BOTTLENECK RAM:** Processor kasta atas ($cpu) dipasangkan dengan RAM yang sangat kecil ($ram GB). Ini sangat menyiksa dan mengubur performa prosesor.";
+                    $is_bottleneck = true;
+                }
+                // Overkill
+                if ($category == 'Office' && ($gpu == 'High' || $tier == "Enthusiast")) {
+                    $expert_verdict[] = "💰 **OVERKILL SPESIFIKASI:** Spesifikasi ini terlalu *dewa* hanya untuk kebutuhan Office/Ngetik biasa. Baterainya dipastikan sangat boros dan bodinya kemungkinan tebal. Sangat mubazir jika Anda tidak berniat main game atau *editing*.";
+                    $is_overkill = true;
                 }
             } else {
-                if ($ram < 6 && $category != 'Daily') $cat_warning[] = "⚠️ RAM $ram GB tergolong kecil untuk $targetYear (HP tidak bisa upgrade).";
-                if ($storageSize < 128) $cat_warning[] = "⚠️ Penyimpanan $storageSize GB sangat sempit untuk standar $targetYear.";
+                if (($tier == "Flagship" || $tier == "High-End") && $ram <= 6) {
+                    $expert_verdict[] = "💥 **BOTTLENECK RAM:** Membeli HP Flagship ($cpu) tapi dengan RAM cuma $ram GB adalah bunuh diri spesifikasi. Multitasking akan berantakan dan game akan sering *force close*.";
+                    $is_bottleneck = true;
+                }
+                if ($category == 'Daily' && ($tier == "Flagship" || $tier == "High-End")) {
+                    $expert_verdict[] = "💰 **OVERKILL SPESIFIKASI:** Chipset super kencang ($cpu) cenderung menguras baterai dan panas. Untuk pemakaian Daily (sosmed/chat), Anda justru membuang uang dan baterai. Sebaiknya cari HP Mid-Range yang fokus pada efisiensi daya.";
+                    $is_overkill = true;
+                }
             }
 
-            // --- VALUASI HARGA ---
-            $base_val = 1500000;
-            if ($tier == "Enthusiast" || $tier == "Flagship") $base_val = 11000000;
-            elseif ($tier == "High-End") $base_val = 7500000;
-            elseif ($tier == "Mid-Range") $base_val = 3500000;
-            elseif ($tier == "Entry") $base_val = 2000000;
+            // --- CEK KOMPONEN KURANG KHUSUS ---
+            if ($ram < $req_ram) {
+                $alasan[] = "Kapasitas RAM ($ram GB) di bawah standar tahun $targetYear untuk kebutuhan $category. Disarankan minimal $req_ram GB.";
+                if ($is_laptop) {
+                    $biaya = ($req_ram - $ram) * 50000; $biaya_upgrade += $biaya;
+                    $upgrade_list[] = ["Upgrade RAM ke minimum $req_ram GB", $biaya];
+                } else {
+                    $alasan[] = "RAM pada Smartphone/Tablet bersifat permanen. Jika dipaksa dipakai kerja berat, performa akan sering lag dan aplikasi otomatis menutup.";
+                }
+            }
 
-            if ($is_laptop && $gpu == 'High') $base_val += 5000000;
-            if ($is_laptop && $gpu == 'Mid') $base_val += 3000000;
-            if ($ram > 8) $base_val += ($ram - 8) * 150000;
+            if ($storageSize < $req_storage) {
+                $alasan[] = "Penyimpanan $storageSize GB sangat sempit, OS dan aplikasi tahun $targetYear sangat rakus memori.";
+                if ($is_laptop) {
+                    $biaya = 500000; $biaya_upgrade += $biaya;
+                    $upgrade_list[] = ["Upgrade / Tambah kapasitas Storage SSD", $biaya];
+                }
+            }
 
-            $total_modal = $hargaInput + $biaya_upgrade;
-            $wajar = $base_val * 1.15; 
-            $ratio = $total_modal / $wajar;
+            if ($is_laptop && $storageType == 'HDD') {
+                $alasan[] = "Masih menggunakan HDD. Menjalankan Windows di tahun $targetYear menggunakan HDD akan membuat proses *booting* & *loading* sangat lambat.";
+                $biaya = 350000; $biaya_upgrade += $biaya;
+                $upgrade_list[] = ["Ganti HDD menjadi SSD NVMe/SATA", $biaya];
+            }
 
-            // --- HASIL AKHIR ---
-            $status = ""; $class = "";
-            if ($ratio < 0.85) { $status = "🔥 DEAL BAGUS"; $class = "price-good"; }
-            elseif ($ratio <= 1.2) { $status = "✅ HARGA WAJAR"; $class = "price-ok"; }
-            else { $status = ($biaya_upgrade > 0) ? "⚠️ KEMAHALAN (SETELAH UPGRADE)" : "⚠️ KEMAHALAN"; $class = "price-bad"; }
+            if ($category == 'Gaming') {
+                if ($is_laptop && $gpu == 'Integrated') {
+                    $alasan[] = "Kebutuhan Anda GAMING, tapi Laptop ini HANYA menggunakan VGA Bawaan (Integrated). Sistem BUKAN LAPTOP GAMING.";
+                    $is_bottleneck = true;
+                }
+                if (!$is_laptop && $tier == "Entry Level") {
+                    $alasan[] = "Kasta chipset ($cpu) berada di kelas Entry Level. Chipset kelas ini pasti overheat dan patah-patah parah untuk game modern.";
+                }
+            }
+
+            if ($category == 'Editing') {
+                if ($tier == "Entry") {
+                    $alasan[] = "Processor kelas Entry ($cpu) akan membuat proses *Rendering* video memakan waktu berjam-jam.";
+                }
+                if ($is_laptop && $gpu == 'Integrated' && !preg_match('/(m1|m2|m3|m4)/', $cpu_l)) {
+                    $alasan[] = "Editing modern butuh Akselerasi VGA. VGA Integrated Windows sangat payah untuk *timeline* video berat.";
+                }
+            }
             
-            if (count($cat_warning) >= 2) { $status = "❌ TIDAK SESUAI KEBUTUHAN"; $class = "price-bad"; }
+            if ($category == 'Programming') {
+                if ($ram < 16) {
+                    $alasan[] = "Kebutuhan Anda PROGRAMMING (Coding). Menjalankan emulator, Docker, atau IDE (seperti Android Studio) dengan RAM $ram GB akan sering membuat laptop hang.";
+                }
+                if ($tier == "Entry") {
+                    $alasan[] = "Processor kelas Entry ($cpu) akan membuat proses *Compile / Build* kode menjadi sangat lama.";
+                }
+            }
+            
+            if ($category == 'Camera') {
+                if ($tier == "Entry Level" || $tier == "Mid-Range") {
+                    $alasan[] = "Kebutuhan Anda FOTOGRAFI, namun Chipset kelas ini ($cpu) memiliki pemroses gambar (ISP) yang standar. Kualitas foto malam akan *noise*.";
+                }
+            }
 
-            echo "";
+            // --- NEW VALUATION LOGIC (2026 MARKET STANDARDS) ---
+            $base_val = 0;
+            if ($is_laptop) {
+                if ($tier == "Enthusiast") $base_val = 22000000;
+                elseif ($tier == "High-End") $base_val = 14000000;
+                elseif ($tier == "Mid-Range") $base_val = 8500000;
+                elseif ($tier == "Entry") $base_val = 5500000;
+
+                if ($gpu == 'High') $base_val += 12000000;
+                elseif ($gpu == 'Mid') $base_val += 6000000;
+                elseif ($gpu == 'Entry') $base_val += 2500000;
+            } else {
+                if ($tier == "Flagship") $base_val = 15000000;
+                elseif ($tier == "High-End") $base_val = 8000000;
+                elseif ($tier == "Mid-Range") $base_val = 4500000;
+                elseif ($tier == "Entry") $base_val = 2000000;
+            }
+
+            // Premium Synergy (Build Quality / Screen Quality / Brand Premium)
+            if ($is_laptop && preg_match('/(m1|m2|m3|m4|zenbook|xps|spectre|yoga|rog|legion)/i', $nama)) {
+                $base_val += 3000000; // Premium Build Quality Value
+            }
+
+            // RAM/Storage Extra Valuations
+            if ($ram > 8) $base_val += ($ram - 8) * 120000; // Valuasi per GB sisa
+            if ($storageSize > 256) $base_val += (($storageSize - 256) / 256) * 400000;
+
+            // Jika Bottleneck Parah, Value total alat ini jatuh di mata pakar
+            if ($is_bottleneck && $is_laptop) {
+                $base_val = $base_val * 0.7; // Diskon / Penalti 30% karena performa cacat pabrik
+            }
+
+            // HITUNG RASIO HARGA TAHAP AKHIR
+            $total_modal = $hargaInput + $biaya_upgrade;
+            $wajar_max = $base_val * 1.20; // 20% toleransi margin (pajak/toko ambil untung)
+            $wajar_min = $base_val * 0.85; // Bawah 85% = super murah / cuci gudang
+            
+            // --- KEPUTUSAN STATUS ---
+            $status = ""; $class = "";
+
+            if ($total_modal > $wajar_max) {
+                $status = "⚠️ OVERPRICE (KEMAHALAN)"; 
+                $class = "price-bad";
+                $expert_verdict[] = "📉 **VALUASI HARGA:** Mengacu pada standar harga baru di $targetYear, nilai wajar/layak pasar gadget ini seharusnya hanya berkisar di angka **Rp ".number_format($base_val,0,',','.')."**. Tawaran Rp ".number_format($hargaInput,0,',','.')." jelas sangat menguras kantong Anda (Terlalu Mahal).";
+            } elseif ($total_modal < $wajar_min) {
+                if (count($upgrade_list) > 0) {
+                    $status = "🔥 DEAL BAGUS (WAJIB UPGRADE)"; 
+                    $class = "price-good";
+                    $expert_verdict[] = "📈 **VALUASI HARGA:** Anda mendapat tawaran yang SANGAT MURAH! Nilai pasarnya sekitar **Rp ".number_format($base_val,0,',','.')."**. Namun pastikan Anda menyisihkan *budget* untuk melakukan **UPGRADE KOMPONEN** yang disarankan agar gadget ini sempurna.";
+                } else {
+                    $status = "🔥 SUPER STEAL DEAL (SANGAT WORTH IT)"; 
+                    $class = "price-good";
+                    $expert_verdict[] = "📈 **VALUASI HARGA:** Ini adalah harga hancur / diskon besar! Harga pasar wajarnya berada di angka **Rp ".number_format($base_val,0,',','.')."**. Langsung *checkout* jika Anda yakin toko/barangnya terpercaya!";
+                }
+            } else {
+                if (count($upgrade_list) > 0) {
+                    $status = "✅ HARGA STANDAR (TAPI WAJIB UPGRADE)"; 
+                    $class = "price-ok";
+                    $expert_verdict[] = "⚖️ **VALUASI HARGA:** Harga yang ditawarkan sesuai dengan standar $targetYear (yaitu di angka **Rp ".number_format($base_val,0,',','.')."**). Namun, karena memiliki kekurangan komponen yang kritis, Anda **WAJIB melakukan upgrade** komponen.";
+                } else {
+                    $status = "✅ HARGA PASARAN (WORTH IT)"; 
+                    $class = "price-ok";
+                    $expert_verdict[] = "⚖️ **VALUASI HARGA:** Harga yang wajar dan tepat (berkisar di angka **Rp ".number_format($base_val,0,',','.')."**). Tidak kemahalan, tidak kemurahan. Cocok dan aman untuk dibeli.";
+                }
+            }
+            
+            // Overrides (Menolak jika HP/Laptop tidak bisa diupgrade tapi speknya mati)
+            if (!$is_laptop && !empty($alasan) && $status != "⚠️ OVERPRICE (KEMAHALAN)") {
+                $status = "❌ JANGAN DIBELI (SPEK MATI)"; 
+                $class = "price-bad";
+                $expert_verdict[] = "⛔ **KESIMPULAN FINAL:** Walaupun harganya dinilai wajar atau murah, spesifikasinya cacat (kurang memori) dan komponen HP/Tablet TIDAK BISA DIUPGRADE sama sekali. Sebaiknya urungkan niat Anda.";
+            }
+
+            if ($is_laptop && $category == 'Gaming' && $gpu == 'Integrated') {
+                $status = "❌ FATAL: BUKAN LAPTOP GAMING"; 
+                $class = "price-bad";
+                $expert_verdict[] = "⛔ **KESIMPULAN FINAL:** Membeli laptop tanpa VGA Dedicated (VGA Tambahan) untuk *Gaming* adalah kesalahan besar. Tolong cari laptop tipe lain.";
+            }
+
+            // RENDER TAMPILAN
             echo "<div class='card' style='margin-top:20px; border-left: 5px solid ".($class == 'price-good' ? '#4ade80' : ($class == 'price-ok' ? '#facc15' : '#f87171')).";'>";
-            echo "<h3>Analisis: $nama</h3>";
-            echo "<p><span class='spec-badge'>$category</span> <span class='spec-badge'>$tier</span> <span class='spec-badge'>$ram GB</span></p>";
+            echo "<h3>Analisis Pakar: $nama</h3>";
+            echo "<p><span class='spec-badge'>$category</span> <span class='spec-badge'>$tier</span> <span class='spec-badge'>$ram GB RAM</span></p>";
             
             echo "<div class='price-box'>
-                    <h2 class='$class' style='margin:0;'>$status</h2>";
-
-            if (!empty($cat_warning)) {
-                echo "<div style='margin-top:10px; background:rgba(255,255,255,0.05); padding:10px; border-radius:8px;'>";
-                foreach($cat_warning as $w) { echo "<p style='color:#fca5a5; font-size:0.9rem; margin:3px 0;'>$w</p>"; }
+                    <h2 class='$class' style='margin:0; margin-bottom:15px;'>$status</h2>";
+            
+            if (!empty($expert_verdict)) {
+                echo "<div style='margin-top:10px; padding:10px; background:rgba(0,0,0,0.3); border-radius:8px;'>";
+                foreach($expert_verdict as $ver) { 
+                    $ver_html = preg_replace('/\*\*(.*?)\*\*/', '<b style="color:#ffffff;">$1</b>', $ver);
+                    echo "<p style='color:#cbd5e1; font-size:0.95rem; margin-bottom:10px; line-height:1.6;'>$ver_html</p>"; 
+                }
                 echo "</div>";
             }
 
-            if (!empty($upgrade_list)) {
-                echo "<div class='upgrade-box'><span class='upgrade-title'>🛠️ REKOMENDASI UPGRADE:</span>";
-                foreach($upgrade_list as $up) { echo "<div class='upgrade-item'><span>• {$up[0]}</span> <span>+Rp ".number_format($up[1])."</span></div>"; }
-                echo "<hr style='border-color:rgba(0,0,0,0.1); margin:10px 0;'>
-                      <div class='upgrade-item' style='font-weight:bold;'><span>Biaya Upgrade:</span> <span>Rp ".number_format($biaya_upgrade)."</span></div></div>";
+            if (!empty($alasan)) {
+                echo "<div style='margin-top:15px; background:rgba(255,0,0,0.05); padding:15px; border-radius:8px; border-left:3px solid #f87171;'>";
+                echo "<strong style='color:#f87171;'>⚠️ KELEMAHAN & KEKURANGAN:</strong><ul style='margin:10px 0 0 20px; color:#fca5a5; font-size:0.9rem; line-height:1.6;'>";
+                foreach($alasan as $w) { echo "<li style='margin-bottom:8px;'>$w</li>"; }
+                echo "</ul></div>";
             }
 
-            echo "<hr style='opacity:0.1; margin:15px 0;'>
+            if (!empty($upgrade_list)) {
+                echo "<div class='upgrade-box' style='margin-top:15px;'><span class='upgrade-title'>🛠️ SOLUSI UPGRADE AGAR LAYAK PAKAI:</span>";
+                foreach($upgrade_list as $up) { echo "<div class='upgrade-item'><span>• {$up[0]}</span> <span>+Rp ".number_format($up[1], 0, ',', '.')."</span></div>"; }
+                echo "<hr style='border-color:rgba(0,0,0,0.1); margin:10px 0;'>
+                      <div class='upgrade-item' style='font-weight:bold; color:#4ade80;'><span>Total Biaya Tambahan Upgrade:</span> <span>Rp ".number_format($biaya_upgrade, 0, ',', '.')."</span></div></div>";
+            }
+
+            echo "<hr style='opacity:0.1; margin:20px 0 15px 0;'>
                     <div style='display:grid; grid-template-columns: 1fr 1fr; gap:10px;'>
-                        <div><small>Harga Unit</small><br><b style='font-size:1.1rem;'>Rp ".number_format($hargaInput)."</b></div>
-                        <div><small>Total Modal</small><br><b style='font-size:1.1rem;'>Rp ".number_format($total_modal)."</b></div>
+                        <div style='background:rgba(255,255,255,0.05); padding:10px; border-radius:8px;'>
+                            <small>Harga Beli / Tawaran</small><br><b style='font-size:1.1rem;'>Rp ".number_format($hargaInput, 0, ',', '.')."</b>
+                        </div>
+                        <div style='background:rgba(255,255,255,0.05); padding:10px; border-radius:8px;'>
+                            <small>Total Modal (Harga Beli + Upgrade)</small><br><b style='font-size:1.1rem; color:".($biaya_upgrade>0?'#facc15':'#4ade80').";'>Rp ".number_format($total_modal, 0, ',', '.')."</b>
+                        </div>
                     </div>
                   </div>";
             echo "</div>";
