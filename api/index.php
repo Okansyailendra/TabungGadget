@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="TabungGadget — rencanakan tabungan gadget impianmu secara cerdas. Simulasi, tracking, dan rekomendasi sesuai budget.">
-    <title>TabungGadget — Rencanakan Gadget Impianmu</title>
-    <link rel="stylesheet" href="assets/style.css">
+    <meta name="description" content="TabungGadget ï¿½ rencanakan tabungan gadget impianmu secara cerdas. Simulasi, tracking, dan rekomendasi sesuai budget.">
+    <title>TabungGadget ï¿½ Rencanakan Gadget Impianmu</title>
+    <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 <body>
 
@@ -26,7 +26,7 @@
         <div class="container">
             <section class="hero">
                 <h1>Nabung pelan-pelan,<br>dapat gadget <span class="accent">pasti</span>.</h1>
-                <p>Tentukan target, lacak tabunganmu setiap hari, dan cek apakah gadget pilihanmu worth it — semua di satu tempat.</p>
+                <p>Tentukan target, lacak tabunganmu setiap hari, dan cek apakah gadget pilihanmu worth it ï¿½ semua di satu tempat.</p>
                 <div class="hero-actions">
                     <a href="finder.php">
                         <button style="width:auto; margin:0;">Cari Gadget</button>

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Cari gadget terbaik sesuai kategori dan budget kamu di TabungGadget.">
     <title>Cari Gadget | TabungGadget</title>
-    <link rel="stylesheet" href="assets/style.css">
+    <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 <body>
 

@@ -9,7 +9,7 @@ if (isset($_SESSION['user_id'])) header("Location: tabungan.php");
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Masuk ke akun TabungGadget untuk melacak tabunganmu.">
     <title>Masuk | TabungGadget</title>
-    <link rel="stylesheet" href="assets/style.css">
+    <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 <body style="display: flex; justify-content: center; align-items: center; min-height: 100dvh; padding: 24px;">
 
@@ -22,7 +22,7 @@ if (isset($_SESSION['user_id'])) header("Location: tabungan.php");
             <input id="username" type="text" name="username" placeholder="username kamu" required autocomplete="username">
 
             <label for="password" style="margin-top: 14px;">Kata sandi</label>
-            <input id="password" type="password" name="password" placeholder="••••••••" required autocomplete="current-password">
+            <input id="password" type="password" name="password" placeholder="ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½" required autocomplete="current-password">
 
             <div style="text-align: right; margin: 8px 0 4px;">
                 <a href="lupa_password.php" style="color: var(--text-tertiary); font-size: 0.82rem; text-decoration: none;">

@@ -32,7 +32,7 @@ if (isset($_POST['buat_target'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Lacak tabungan harian menuju gadget impianmu di TabungGadget.">
     <title>Tabunganku | TabungGadget</title>
-    <link rel="stylesheet" href="assets/style.css">
+    <link rel="stylesheet" href="/assets/css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
@@ -72,7 +72,7 @@ if (isset($_POST['buat_target'])) {
         ?>
 
             <?php if (!$goal): ?>
-                <!-- Belum ada target — form pilih gadget -->
+                <!-- Belum ada target ï¿½ form pilih gadget -->
                 <section class="card">
                     <h2>Tentukan target</h2>
                     <p style="margin: 6px 0 0;">Pilih gadget yang ingin kamu tabung, lalu tentukan berapa bulan target menabungmu.</p>
