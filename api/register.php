@@ -5,7 +5,7 @@ if(isset($_SESSION['user_id'])) header("Location: tabungan.php"); // Redirect ka
 <html lang="id">
 <head>
     <title>Daftar Akun | TabungGadget</title>
-    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="/assets/style.css">
 </head>
 <body style="display:flex; justify-content:center; align-items:center; height:100vh;">
     <div class="card" style="width:100%; max-width:400px; text-align:center;">

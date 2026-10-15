@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="TabungGadget � rencanakan tabungan gadget impianmu secara cerdas. Simulasi, tracking, dan rekomendasi sesuai budget.">
     <title>TabungGadget � Rencanakan Gadget Impianmu</title>
-    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="/assets/style.css">
 </head>
 <body>
 
