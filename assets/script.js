@@ -1,4 +1,4 @@
-// Loader
+﻿// Loader
 window.onload = () => {
     const loader = document.getElementById("loader");
     if(loader) {
@@ -49,13 +49,13 @@ function renderChart(targetHarga, tabunganAwal, nabungHarian, totalHari) {
             datasets: [{
                 label: 'Progres Tabungan',
                 data: data,
-                borderColor: '#4da6ff',
-                backgroundColor: 'rgba(77, 166, 255, 0.15)',
+                borderColor: '#e8a23a',
+                backgroundColor: 'rgba(232, 162, 58, 0.1)',
                 borderWidth: 3,
                 tension: 0.3,
                 fill: true,
-                pointBackgroundColor: '#020617',
-                pointBorderColor: '#4da6ff'
+                pointBackgroundColor: '#141414',
+                pointborderColor: '#e8a23a'
             },
             {
                 label: 'Harga gadget',
@@ -111,3 +111,4 @@ document.addEventListener('input', function(e) {
         formatRupiah(e.target);
     }
 })
+

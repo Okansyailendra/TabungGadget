@@ -1,4 +1,4 @@
-<?php require 'koneksi.php'; ?>
+﻿<?php require 'koneksi.php'; ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -20,9 +20,9 @@
         select option { background-color: #0f172a !important; color: white !important; padding: 10px; }
         ::placeholder { color: rgba(255, 255, 255, 0.4) !important; }
 
-        .price-good { color: #4ade80; font-weight: bold; }
-        .price-ok { color: #facc15; font-weight: bold; }
-        .price-bad { color: #f87171; font-weight: bold; }
+        .price-good { color: var(--ok); font-weight: bold; }
+        .price-ok { color: var(--warn); font-weight: bold; }
+        .price-bad { color: var(--bad); font-weight: bold; }
         
         .price-box { background: rgba(0, 0, 0, 0.4); padding: 20px; border-radius: 12px; margin-top: 20px; border: 1px solid rgba(255, 255, 255, 0.1); }
         .spec-badge { background: rgba(255, 255, 255, 0.1); padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; margin-right: 5px; color: #e2e8f0; }
@@ -34,16 +34,19 @@
 </head>
 <body>
 
+<a href="#main" class="skip-link">Langsung ke konten</a>
+<div id="loader"><div class="spinner"></div></div>
 <nav>
     <h1>Tabung<span>Gadget</span></h1>
     <div class="menu">
         <a href="index.php">Beranda</a>
         <a href="tabungan.php">Tabungan</a>
-        <a href="worthit.php" class="active">Worth It</a>
+        <a href="worthit.php" class="active">Worth It?</a>
         <a href="finder.php">Cari Gadget</a>
     </div>
 </nav>
 
+<main id="main">
 <div class="container">
     <section class="card">
         <h2>💰 Cek Worth It (Smart Check)</h2>
@@ -135,7 +138,7 @@
             
             if ($validasi !== "OK") {
                 // Jika validasi gagal, tampilkan error
-                echo "<div class='card' style='margin-top:20px; border-left: 5px solid #f87171;'>
+                echo "<div class='card' style='margin-top:20px; border-left: 3px solid #f87171;'>
                         <h3>❌ Input Tidak Logis</h3>
                         <div class='price-box'>
                             <h2 class='price-bad'>KESALAHAN INPUT</h2>
@@ -384,7 +387,7 @@
             }
 
             // RENDER TAMPILAN
-            echo "<div class='card' style='margin-top:20px; border-left: 5px solid ".($class == 'price-good' ? '#4ade80' : ($class == 'price-ok' ? '#facc15' : '#f87171')).";'>";
+            echo "<div class='card' style='margin-top:20px; border-left: 3px solid ".($class == 'price-good' ? '#4ade80' : ($class == 'price-ok' ? '#facc15' : '#f87171')).";'>";
             echo "<h3>Analisis Pakar: $nama</h3>";
             echo "<p><span class='spec-badge'>$category</span> <span class='spec-badge'>$tier</span> <span class='spec-badge'>$ram GB RAM</span></p>";
             
