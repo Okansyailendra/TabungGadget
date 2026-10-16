@@ -1,14 +1,13 @@
 <?php
 session_start();
 
-$host = "localhost";
-$user = "root";
-$pass = "";
-$db   = "tabunggadget";
-$port = 3307; // Tambahkan variabel port di sini
+$host = getenv('DB_HOST') ?: "localhost";
+$user = getenv('DB_USER') ?: "root";
+$pass = getenv('DB_PASS') !== false ? getenv('DB_PASS') : "";
+$db   = getenv('DB_NAME') ?: "tabunggadget";
+$port = getenv('DB_PORT') ? (int)getenv('DB_PORT') : 3307;
 
-// Masukkan variabel $port sebagai parameter ke-5
-$conn = mysqli_connect($host, $user, $pass, $db, $port);
+$conn = @mysqli_connect($host, $user, $pass, $db, $port);
 
 if(!$conn){
     die("❌ Koneksi database gagal: " . mysqli_connect_error());

@@ -10,8 +10,20 @@
       "dest": "/assets/$1"
     },
     {
-      "src": "/(.*)",
+      "src": "^/$",
       "dest": "/api/index.php"
+    },
+    {
+      "src": "^/api/(.*)",
+      "dest": "/api/$1"
+    },
+    {
+      "src": "^/(.*\\.php)$",
+      "dest": "/api/$1"
+    },
+    {
+      "src": "^/([^/.]+)$",
+      "dest": "/api/$1.php"
     }
   ]
 }

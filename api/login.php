@@ -9,7 +9,7 @@ if (isset($_SESSION['user_id'])) header("Location: tabungan.php");
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Masuk ke akun TabungGadget untuk melacak tabunganmu.">
     <title>Masuk | TabungGadget</title>
-    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="../assets/style.css">
 </head>
 <body style="display: flex; justify-content: center; align-items: center; min-height: 100dvh; padding: 24px;">
 

@@ -1,11 +1,11 @@
-﻿<?php require 'koneksi.php'; ?>
+<?php require 'koneksi.php'; ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Analisis Harga & Validasi | TabungGadget</title>
-    <link rel="stylesheet" href="/assets/style.css">
+    <link rel="stylesheet" href="../assets/style.css">
     <style>
         /* CSS PASTI GELAP */
         select, input[type="text"], input[type="number"], textarea {
@@ -470,7 +470,14 @@
         }
     });
 
-    window.onload = adjustForm;
+    window.addEventListener('load', function() {
+        if (typeof adjustForm === 'function') adjustForm();
+        const loader = document.getElementById("loader");
+        if(loader) {
+            loader.style.opacity = "0";
+            setTimeout(() => loader.style.display = "none", 500);
+        }
+    });
 </script>
 </body>
 </html>
